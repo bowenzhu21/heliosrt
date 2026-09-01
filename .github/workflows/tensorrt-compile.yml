@@ -1,0 +1,24 @@
+name: tensorrt-compile
+
+on:
+  pull_request:
+    paths:
+      - "CMakeLists.txt"
+      - "cmake/**"
+      - "include/helios/runtime/**"
+      - "src/runtime/**"
+      - "tests/tensorrt_compile_smoke.cpp"
+      - ".github/workflows/tensorrt-compile.yml"
+
+jobs:
+  compile:
+    runs-on: ubuntu-24.04
+    # Bootstrap tag from NVIDIA's documented TensorRT 10.3 container. The resolved digest from
+    # this PR's setup logs will replace the tag before merge.
+    container: nvcr.io/nvidia/tensorrt:24.08-py3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure TensorRT 10 baseline
+        run: cmake -S . -B build-gpu -DHELIOS_ENABLE_CUDA=ON -DHELIOS_BUILD_TESTS=OFF
+      - name: Compile and link TensorRT executor
+        run: cmake --build build-gpu --target tensorrt_compile_smoke --parallel 2
