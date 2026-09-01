@@ -17,6 +17,9 @@ target_compile_options(helios_core PRIVATE -Wall -Wextra -Wpedantic -Werror)
 add_executable(helios_sim apps/helios_sim.cpp)
 target_link_libraries(helios_sim PRIVATE helios_core)
 
+add_executable(helios_trace_replay apps/trace_replay.cpp)
+target_link_libraries(helios_trace_replay PRIVATE helios_core)
+
 if(HELIOS_BUILD_TESTS)
   enable_testing()
   foreach(test_name IN ITEMS page_allocator scheduler)
@@ -24,9 +27,10 @@ if(HELIOS_BUILD_TESTS)
     target_link_libraries(test_${test_name} PRIVATE helios_core)
     add_test(NAME ${test_name} COMMAND test_${test_name})
   endforeach()
+  add_test(NAME trace_replay
+      COMMAND helios_trace_replay ${CMAKE_CURRENT_SOURCE_DIR}/bench/traces/smoke.csv)
 endif()
 
 if(HELIOS_ENABLE_CUDA)
   message(FATAL_ERROR "CUDA integration is intentionally gated until Phase 1; see docs/IMPLEMENTATION_PLAN.md")
 endif()
-

@@ -43,6 +43,30 @@ int main() {
   Check(allocator.Stats().allocated_pages == 0, "completion and cancellation release pages");
   Check(allocator.VerifyInvariants(), "allocator remains valid under scheduler");
 
-  std::cout << "PASS scheduler (admission, round-robin decode, cancellation, cleanup)\n";
-}
+  PageAllocator deadline_allocator(16, 4);
+  ContinuousScheduler deadlines(SchedulerConfig{3, 1, 16}, &deadline_allocator);
+  deadlines.Submit(10, 4, 5, 20);
+  deadlines.Submit(11, 4, 1, 3);
+  deadlines.AdmitPrefillBatch();
+  const auto urgent_batch = deadlines.FormDecodeBatch();
+  Check(urgent_batch.size() == 1 && urgent_batch.front() == 11,
+        "earliest deadline is decoded first");
+  deadlines.CompleteDecodeStep(urgent_batch);
+  Check(deadlines.Get(11).state == RequestState::kCompleted, "urgent request completes");
+  deadlines.AdvanceTime(20);
+  Check(deadlines.Get(10).state == RequestState::kDeadlineExceeded, "deadline expiry state");
+  Check(deadline_allocator.Stats().allocated_pages == 0, "deadline expiry releases pages");
 
+  PageAllocator blocked_allocator(3, 4);
+  ContinuousScheduler blocked(SchedulerConfig{2, 2, 16}, &blocked_allocator);
+  blocked.Submit(20, 8, 1, 50);
+  blocked.Submit(21, 8, 1, 50);
+  Check(blocked.AdmitPrefillBatch().size() == 1, "first request consumes KV capacity");
+  Check(blocked.Stats().blocked == 1, "second request blocks for memory");
+  blocked.CompleteDecodeStep(blocked.FormDecodeBatch());
+  Check(blocked.AdmitPrefillBatch().size() == 1, "blocked request is admitted after pages free");
+  blocked.CompleteDecodeStep(blocked.FormDecodeBatch());
+  Check(blocked_allocator.Stats().allocated_pages == 0, "memory-blocked flow leaks no pages");
+
+  std::cout << "PASS scheduler (admission, deadlines, memory blocking, cancellation, cleanup)\n";
+}

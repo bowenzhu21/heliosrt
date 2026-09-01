@@ -5,12 +5,15 @@ CORE := src/kv/page_allocator.cpp src/scheduler/continuous_scheduler.cpp
 
 .PHONY: all test run clean
 
-all: $(BUILD)/helios_sim
+all: $(BUILD)/helios_sim $(BUILD)/helios_trace_replay
 
 $(BUILD):
 	mkdir -p $(BUILD)
 
 $(BUILD)/helios_sim: $(CORE) apps/helios_sim.cpp | $(BUILD)
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+$(BUILD)/helios_trace_replay: $(CORE) apps/trace_replay.cpp | $(BUILD)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 $(BUILD)/test_page_allocator: $(CORE) tests/test_page_allocator.cpp | $(BUILD)
@@ -19,13 +22,13 @@ $(BUILD)/test_page_allocator: $(CORE) tests/test_page_allocator.cpp | $(BUILD)
 $(BUILD)/test_scheduler: $(CORE) tests/test_scheduler.cpp | $(BUILD)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-test: $(BUILD)/test_page_allocator $(BUILD)/test_scheduler
+test: $(BUILD)/test_page_allocator $(BUILD)/test_scheduler $(BUILD)/helios_trace_replay
 	$(BUILD)/test_page_allocator
 	$(BUILD)/test_scheduler
+	$(BUILD)/helios_trace_replay bench/traces/smoke.csv
 
 run: $(BUILD)/helios_sim
 	$(BUILD)/helios_sim
 
 clean:
-	rm -f $(BUILD)/helios_sim $(BUILD)/test_page_allocator $(BUILD)/test_scheduler
-
+	rm -f $(BUILD)/helios_sim $(BUILD)/helios_trace_replay $(BUILD)/test_page_allocator $(BUILD)/test_scheduler

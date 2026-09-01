@@ -15,6 +15,7 @@ int main() {
   while (scheduler.Stats().completed < 12) {
     scheduler.AdmitPrefillBatch();
     scheduler.CompleteDecodeStep(scheduler.FormDecodeBatch());
+    scheduler.AdvanceTime();
     ++iterations;
   }
 
@@ -26,4 +27,3 @@ int main() {
             << "allocator_invariants=" << (allocator.VerifyInvariants() ? "valid" : "invalid")
             << '\n';
 }
-
