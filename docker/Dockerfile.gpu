@@ -1,0 +1,12 @@
+# syntax=docker/dockerfile:1.7
+# The build wrapper requires an immutable image digest; no floating CUDA/TensorRT tag is accepted.
+ARG TENSORRT_IMAGE
+FROM ${TENSORRT_IMAGE}
+
+WORKDIR /workspace/heliosrt
+COPY . .
+
+# Validate every CPU-testable contract inside the exact GPU software image before paid GPU runs.
+RUN make test
+
+CMD ["bash"]

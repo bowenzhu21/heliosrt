@@ -13,6 +13,8 @@ The repository currently contains the CPU-testable foundation:
 - A 100,000-operation randomized allocator stress test.
 - Deadline-aware scheduling, decode-page headroom, and deterministic trace replay.
 - A versioned benchmark schema with cross-field validation and environment fingerprints.
+- A backend-neutral executor contract with a deterministic CPU mock for orchestration tests.
+- SHA-256-bound model/engine manifests and immutable GPU-container inputs.
 - CMake, Make, GitHub Actions, and an initial Jenkins pipeline.
 
 No performance claims in this repository are assumed. Resume metrics remain placeholders until
@@ -52,3 +54,4 @@ gRPC request -> Go control plane -> C++ worker
 See [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) for the gated build plan,
 acceptance criteria, GPU rental strategy, and commit sequence.
 See [docs/BENCHMARKING.md](docs/BENCHMARKING.md) for the measurement and result contract.
+See [docs/ARTIFACTS.md](docs/ARTIFACTS.md) for model, engine, and container identity rules.

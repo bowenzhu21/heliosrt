@@ -51,6 +51,9 @@ reserves, deterministic trace replay, ASan/UBSan lanes, and a versioned benchmar
 
 Exit: cosine similarity above 0.999 for supported precision and 99-100% greedy-token agreement.
 
+Status: backend-neutral executor and immutable artifact/container contracts are implemented and
+CPU-tested. TensorRT engine loading and parity measurement remain blocked on an NVIDIA runner.
+
 ### M2 - GPU-resident sampling plugin
 
 - Implement max/logits preprocessing kernel, then top-k sampling.
