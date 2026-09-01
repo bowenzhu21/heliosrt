@@ -3,6 +3,7 @@ project(heliosrt VERSION 0.1.0 LANGUAGES CXX)
 
 option(HELIOS_ENABLE_CUDA "Build CUDA/TensorRT runtime components" OFF)
 option(HELIOS_BUILD_TESTS "Build CPU unit and stress tests" ON)
+option(HELIOS_ENABLE_SANITIZERS "Enable AddressSanitizer and UndefinedBehaviorSanitizer" OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -13,6 +14,10 @@ add_library(helios_core
     src/scheduler/continuous_scheduler.cpp)
 target_include_directories(helios_core PUBLIC include)
 target_compile_options(helios_core PRIVATE -Wall -Wextra -Wpedantic -Werror)
+if(HELIOS_ENABLE_SANITIZERS)
+  target_compile_options(helios_core PUBLIC -fsanitize=address,undefined -fno-omit-frame-pointer)
+  target_link_options(helios_core PUBLIC -fsanitize=address,undefined -fno-omit-frame-pointer)
+endif()
 
 add_executable(helios_sim apps/helios_sim.cpp)
 target_link_libraries(helios_sim PRIVATE helios_core)

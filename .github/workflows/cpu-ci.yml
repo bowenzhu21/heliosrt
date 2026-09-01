@@ -14,4 +14,24 @@ jobs:
         run: cmake --build build
       - name: Test
         run: ctest --test-dir build --output-on-failure
+      - name: Validate benchmark contract
+        run: python3 scripts/validate_benchmark.py bench/examples/cpu-smoke.json
+      - name: Record environment fingerprint
+        run: python3 scripts/environment_fingerprint.py --output build/environment.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cpu-environment
+          path: build/environment.json
 
+  sanitizers:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure sanitizers
+        run: >-
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          -DHELIOS_ENABLE_SANITIZERS=ON
+      - name: Build
+        run: cmake --build build
+      - name: Test
+        run: ctest --test-dir build --output-on-failure

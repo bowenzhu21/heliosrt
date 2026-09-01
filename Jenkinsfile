@@ -7,6 +7,17 @@ pipeline {
         sh 'make run'
       }
     }
+    stage('Sanitizers') {
+      steps {
+        sh 'make test-sanitize'
+      }
+    }
+    stage('Benchmark contract') {
+      steps {
+        sh 'make validate'
+        sh 'make fingerprint'
+      }
+    }
   }
   post {
     always {
@@ -14,4 +25,3 @@ pipeline {
     }
   }
 }
-

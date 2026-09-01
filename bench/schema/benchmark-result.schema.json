@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heliosrt.dev/schema/benchmark-result-v1.json",
+  "title": "HeliosRT benchmark result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "timestamp_utc",
+    "measured",
+    "configuration",
+    "environment",
+    "outcomes",
+    "metrics"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "run_id": {"type": "string", "minLength": 1},
+    "timestamp_utc": {"type": "string", "format": "date-time"},
+    "measured": {"type": "boolean"},
+    "configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["backend", "model_id", "precision", "input_tokens", "output_tokens", "concurrency"],
+      "properties": {
+        "backend": {"enum": ["cpu-simulation", "pytorch-eager", "tensorrt-stock", "heliosrt"]},
+        "model_id": {"type": "string"},
+        "precision": {"enum": ["fp32", "fp16", "bf16", "int8", "simulation"]},
+        "input_tokens": {"type": "integer", "minimum": 0},
+        "output_tokens": {"type": "integer", "minimum": 0},
+        "concurrency": {"type": "integer", "minimum": 1},
+        "batch_bucket": {"type": ["integer", "null"], "minimum": 1}
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fingerprint_version", "git_commit", "os", "architecture", "gpu_model", "gpu_count"],
+      "properties": {
+        "fingerprint_version": {"const": 1},
+        "git_commit": {"type": "string", "minLength": 7},
+        "os": {"type": "string"},
+        "architecture": {"type": "string"},
+        "gpu_model": {"type": ["string", "null"]},
+        "gpu_count": {"type": "integer", "minimum": 0},
+        "driver_version": {"type": ["string", "null"]},
+        "cuda_version": {"type": ["string", "null"]},
+        "tensorrt_version": {"type": ["string", "null"]}
+      }
+    },
+    "outcomes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requests", "completed", "cancelled", "deadline_exceeded", "failed"],
+      "properties": {
+        "requests": {"type": "integer", "minimum": 0},
+        "completed": {"type": "integer", "minimum": 0},
+        "cancelled": {"type": "integer", "minimum": 0},
+        "deadline_exceeded": {"type": "integer", "minimum": 0},
+        "failed": {"type": "integer", "minimum": 0}
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ttft_ms", "itl_ms", "request_latency_ms", "output_tokens_per_second", "peak_device_memory_bytes"],
+      "properties": {
+        "ttft_ms": {"$ref": "#/$defs/percentiles"},
+        "itl_ms": {"$ref": "#/$defs/percentiles"},
+        "request_latency_ms": {"$ref": "#/$defs/percentiles"},
+        "output_tokens_per_second": {"type": ["number", "null"], "minimum": 0},
+        "requests_per_second": {"type": ["number", "null"], "minimum": 0},
+        "peak_device_memory_bytes": {"type": ["integer", "null"], "minimum": 0},
+        "graph_hit_rate": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "average_active_batch": {"type": ["number", "null"], "minimum": 0}
+      }
+    }
+  },
+  "$defs": {
+    "percentiles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["p50", "p95", "p99"],
+      "properties": {
+        "p50": {"type": ["number", "null"], "minimum": 0},
+        "p95": {"type": ["number", "null"], "minimum": 0},
+        "p99": {"type": ["number", "null"], "minimum": 0}
+      }
+    }
+  }
+}

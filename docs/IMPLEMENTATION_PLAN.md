@@ -29,7 +29,7 @@ Resume numbers are never forecasts. They are promoted only from reproducible ben
 
 ## 3. Milestones and exit criteria
 
-### M0 - CPU foundation (started)
+### M0 - CPU foundation (completed)
 
 - Repository, builds, formatting, and CPU CI.
 - Paged allocator with transactional OOM and exact ownership accounting.
@@ -37,6 +37,9 @@ Resume numbers are never forecasts. They are promoted only from reproducible ben
 - 100,000 randomized allocation/free operations with zero invariant failures.
 
 Exit: `make test` and `make run` pass; all completed/cancelled requests own zero pages.
+
+Status: completed with atomic allocation fault injection, deadline expiry, decode-page admission
+reserves, deterministic trace replay, ASan/UBSan lanes, and a versioned benchmark contract.
 
 ### M1 - Reproducible baseline
 

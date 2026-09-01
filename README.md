@@ -11,6 +11,8 @@ The repository currently contains the CPU-testable foundation:
 - A continuous-batching scheduler model with separate prefill, blocked, and decode queues.
 - Round-robin decode scheduling, memory backpressure, and lifecycle cleanup.
 - A 100,000-operation randomized allocator stress test.
+- Deadline-aware scheduling, decode-page headroom, and deterministic trace replay.
+- A versioned benchmark schema with cross-field validation and environment fingerprints.
 - CMake, Make, GitHub Actions, and an initial Jenkins pipeline.
 
 No performance claims in this repository are assumed. Resume metrics remain placeholders until
@@ -20,6 +22,8 @@ the benchmark harness produces reproducible results on a recorded hardware/softw
 
 ```bash
 make test
+make test-sanitize
+make fingerprint
 make run
 ```
 
@@ -47,4 +51,4 @@ gRPC request -> Go control plane -> C++ worker
 
 See [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) for the gated build plan,
 acceptance criteria, GPU rental strategy, and commit sequence.
-
+See [docs/BENCHMARKING.md](docs/BENCHMARKING.md) for the measurement and result contract.

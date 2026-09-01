@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "run_id": "cpu-trace-smoke",
+  "timestamp_utc": "2026-09-01T00:00:00Z",
+  "measured": false,
+  "configuration": {
+    "backend": "cpu-simulation",
+    "model_id": "none",
+    "precision": "simulation",
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "concurrency": 4,
+    "batch_bucket": 4
+  },
+  "environment": {
+    "fingerprint_version": 1,
+    "git_commit": "0000000-example",
+    "os": "example",
+    "architecture": "example",
+    "gpu_model": null,
+    "gpu_count": 0,
+    "driver_version": null,
+    "cuda_version": null,
+    "tensorrt_version": null
+  },
+  "outcomes": {
+    "requests": 4,
+    "completed": 2,
+    "cancelled": 1,
+    "deadline_exceeded": 1,
+    "failed": 0
+  },
+  "metrics": {
+    "ttft_ms": {"p50": null, "p95": null, "p99": null},
+    "itl_ms": {"p50": null, "p95": null, "p99": null},
+    "request_latency_ms": {"p50": null, "p95": null, "p99": null},
+    "output_tokens_per_second": null,
+    "requests_per_second": null,
+    "peak_device_memory_bytes": null,
+    "graph_hit_rate": null,
+    "average_active_batch": null
+  }
+}
