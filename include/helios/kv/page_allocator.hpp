@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -20,10 +21,14 @@ struct AllocatorStats {
 
 class PageAllocator {
  public:
-  PageAllocator(std::size_t total_pages, std::size_t tokens_per_page);
+  using AllocationHook = std::function<void(std::size_t staged_page_count)>;
+
+  PageAllocator(std::size_t total_pages, std::size_t tokens_per_page,
+                AllocationHook before_commit_hook = {});
 
   [[nodiscard]] std::size_t PagesRequired(std::size_t tokens) const;
   [[nodiscard]] bool CanAllocate(std::size_t page_count) const noexcept;
+  [[nodiscard]] std::size_t PagesOwned(SequenceId sequence_id) const noexcept;
 
   // Allocation is transactional: an out-of-memory failure changes no state.
   std::vector<PageId> Allocate(SequenceId sequence_id, std::size_t page_count);
@@ -41,10 +46,10 @@ class PageAllocator {
   };
 
   std::size_t tokens_per_page_;
+  AllocationHook before_commit_hook_;
   std::vector<PageState> pages_;
   std::vector<PageId> free_pages_;
   std::unordered_map<SequenceId, std::vector<PageId>> page_tables_;
 };
 
 }  // namespace helios::kv
-
