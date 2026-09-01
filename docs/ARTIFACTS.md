@@ -17,6 +17,6 @@ python3 scripts/artifact_manifest.py create \
 python3 scripts/artifact_manifest.py verify artifacts/manifest.json
 ```
 
-The GPU container follows the same rule. `scripts/build_gpu_container.sh` rejects floating image
-tags and requires `HELIOS_TENSORRT_IMAGE` in `image@sha256:digest` form. The exact digest will be
-selected and recorded when an NVIDIA runner is available; the repository does not guess one.
+The GPU container follows the same rule. `docker/tensorrt-image.txt` pins the exact TensorRT 10.3
+image digest resolved by compile CI. `scripts/build_gpu_container.sh` uses that digest by default
+and rejects any floating override passed through `HELIOS_TENSORRT_IMAGE`.
