@@ -38,5 +38,16 @@ if(HELIOS_BUILD_TESTS)
 endif()
 
 if(HELIOS_ENABLE_CUDA)
-  message(FATAL_ERROR "CUDA integration is intentionally gated until Phase 1; see docs/IMPLEMENTATION_PLAN.md")
+  enable_language(CUDA)
+  list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+  find_package(CUDAToolkit REQUIRED)
+  find_package(TensorRT 10 REQUIRED)
+
+  add_library(helios_tensorrt src/runtime/tensorrt_executor.cpp)
+  target_include_directories(helios_tensorrt PUBLIC include)
+  target_compile_options(helios_tensorrt PRIVATE -Wall -Wextra -Wpedantic -Werror)
+  target_link_libraries(helios_tensorrt PUBLIC helios_core TensorRT::nvinfer CUDA::cudart)
+
+  add_executable(tensorrt_compile_smoke tests/tensorrt_compile_smoke.cpp)
+  target_link_libraries(tensorrt_compile_smoke PRIVATE helios_tensorrt)
 endif()

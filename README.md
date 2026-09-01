@@ -14,6 +14,7 @@ The repository currently contains the CPU-testable foundation:
 - Deadline-aware scheduling, decode-page headroom, and deterministic trace replay.
 - A versioned benchmark schema with cross-field validation and environment fingerprints.
 - A backend-neutral executor contract with a deterministic CPU mock for orchestration tests.
+- A compile-gated TensorRT 10 stock decode backend using persistent CUDA buffers and `enqueueV3`.
 - SHA-256-bound model/engine manifests and immutable GPU-container inputs.
 - CMake, Make, GitHub Actions, and an initial Jenkins pipeline.
 

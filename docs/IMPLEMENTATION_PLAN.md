@@ -52,7 +52,8 @@ reserves, deterministic trace replay, ASan/UBSan lanes, and a versioned benchmar
 Exit: cosine similarity above 0.999 for supported precision and 99-100% greedy-token agreement.
 
 Status: backend-neutral executor and immutable artifact/container contracts are implemented and
-CPU-tested. TensorRT engine loading and parity measurement remain blocked on an NVIDIA runner.
+CPU-tested. A stock TensorRT 10 `enqueueV3` backend now has compile/link validation in NVIDIA's
+development container. Numerical parity and execution measurement remain GPU-gated.
 
 ### M2 - GPU-resident sampling plugin
 
