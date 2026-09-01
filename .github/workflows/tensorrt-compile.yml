@@ -13,9 +13,8 @@ on:
 jobs:
   compile:
     runs-on: ubuntu-24.04
-    # Bootstrap tag from NVIDIA's documented TensorRT 10.3 container. The resolved digest from
-    # this PR's setup logs will replace the tag before merge.
-    container: nvcr.io/nvidia/tensorrt:24.08-py3
+    # TensorRT 10.3 / CUDA 12.6, pinned to the digest resolved by the first successful PR build.
+    container: nvcr.io/nvidia/tensorrt:24.08-py3@sha256:9507e5f248fc61a5b2c985ce6e386ecf2576c3d96112ceb38cf88b240d4ca072
     steps:
       - uses: actions/checkout@v4
       - name: Configure TensorRT 10 baseline
